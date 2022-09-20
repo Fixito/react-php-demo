@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const url = 'http://localhost:8080/demo-fullstack/back/';
-// const url = 'http://localhost:8080/';
 
 const App = () => {
   const [firstName, setFirstName] = useState('');
