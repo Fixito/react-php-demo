@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const url = 'http://localhost:8080/demo-fullstack/back/';
-// const url = 'http://localhost:5000/';
+// const url = 'http://localhost:8080/';
 
 const App = () => {
   const [firstName, setFirstName] = useState('');
   const [people, setPeople] = useState([]);
+  const [editID, setEditID] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const fetchUsers = async () => {
-    const { data } = await axios(url);
-    console.log(data);
+    const { data } = await axios(`${url}read.php`);
     setPeople(data);
   };
 
@@ -21,25 +22,38 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (firstName) {
-      const person = { name: firstName };
-      // setPeople((people) => {
-      //   return [...people, person];
-      // });
+    if (!firstName) {
+      console.log('valeur vide');
+    } else if (firstName && isEditing) {
+      const person = { user_id: parseInt(editID), name: firstName };
+
+      await axios.post(`${url}edit.php`, person);
       fetchUsers();
+      setEditID(null);
+      setIsEditing(false);
       setFirstName('');
+    } else {
+      const person = { name: firstName };
 
       await axios.post(`${url}create.php`, person);
-    } else {
-      console.log('valeur vide');
+      fetchUsers();
+      setFirstName('');
     }
   };
 
   const deleteUser = async (id) => {
-    const newPeople = people.filter((person) => person.user_id !== id);
-    setPeople(newPeople);
+    await axios.post(`${url}delete.php`, { user_id: id });
+    fetchUsers();
+    setEditID(null);
+    setIsEditing(false);
+    setFirstName('');
+  };
 
-    await axios.delete(`${url}delete.php?id=${id}`);
+  const editUser = async (id) => {
+    setEditID(id);
+    const user = people.find((person) => person.user_id === id);
+    setFirstName(user.name);
+    setIsEditing(true);
   };
 
   return (
@@ -56,14 +70,17 @@ const App = () => {
               onChange={(e) => setFirstName(e.target.value)}
             />
           </div>
-          <button type='submit'>add person</button>
+          <button type='submit'>
+            {isEditing ? 'modifier la personne' : 'ajouter une personne'}
+          </button>
         </form>
         {people.map((person) => {
           const { user_id, name } = person;
           return (
             <div key={user_id} className='item'>
               <h4>{name}</h4>
-              <button onClick={() => deleteUser(user_id)}>delete</button>
+              <button onClick={() => editUser(user_id)}>éditer</button>
+              <button onClick={() => deleteUser(user_id)}>supprimer</button>
             </div>
           );
         })}
