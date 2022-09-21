@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Alert from './Alert';
+import Loading from './Loading';
 
 const url = 'http://localhost:8080/demo-fullstack/back/';
 
 const App = () => {
   const [firstName, setFirstName] = useState('');
   const [people, setPeople] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [editID, setEditID] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [alert, setAlert] = useState({
@@ -21,9 +23,12 @@ const App = () => {
 
   const fetchUsers = async () => {
     try {
+      setIsLoading(true);
       const { data } = await axios(`${url}read.php`);
       setPeople(data);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       showAlert(true, 'danger', 'Il y a eu une erreur, essayez plus tard...');
     }
   };
@@ -105,16 +110,20 @@ const App = () => {
             {isEditing ? 'modifier la personne' : 'ajouter une personne'}
           </button>
         </form>
-        {people.map((person) => {
-          const { user_id, name } = person;
-          return (
-            <div key={user_id} className='item'>
-              <h4>{name}</h4>
-              <button onClick={() => editUser(user_id)}>éditer</button>
-              <button onClick={() => deleteUser(user_id)}>supprimer</button>
-            </div>
-          );
-        })}
+        {!isLoading ? (
+          people.map((person) => {
+            const { user_id, name } = person;
+            return (
+              <div key={user_id} className='item'>
+                <h4>{name}</h4>
+                <button onClick={() => editUser(user_id)}>éditer</button>
+                <button onClick={() => deleteUser(user_id)}>supprimer</button>
+              </div>
+            );
+          })
+        ) : (
+          <Loading />
+        )}
       </article>
     </>
   );

@@ -148,6 +148,23 @@ p {
   background: var(--clr-green-light);
 }
 
+/** spinner */
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  margin: 0 auto;
+  width: 6rem;
+  height: 6rem;
+  border: 5px solid var(--clr-grey-4);
+  border-radius: 50%;
+  border-top-color: var(--clr-primary-5);
+  animation: spinner 0.6s linear infinite;
+}
+
 /*  global classes */
 
 /* section */
