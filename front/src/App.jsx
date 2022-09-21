@@ -35,7 +35,7 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!firstName) {
+    if (!firstName.trim()) {
       showAlert(true, 'danger', 'Veuillez entrer un nom');
     } else if (firstName && isEditing) {
       try {
