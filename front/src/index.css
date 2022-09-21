@@ -31,10 +31,10 @@ Variables
   --clr-grey-9: hsl(212, 33%, 89%);
   --clr-grey-10: hsl(210, 36%, 96%);
   --clr-white: #fff;
-  --clr-red-dark: hsl(360, 67%, 44%);
-  --clr-red-light: hsl(360, 71%, 66%);
-  --clr-green-dark: hsl(125, 67%, 44%);
-  --clr-green-light: hsl(125, 71%, 66%);
+  --clr-red-dark: hsl(355, 61%, 32%);
+  --clr-red-light: hsl(355, 70%, 91%);
+  --clr-green-dark: hsl(152, 69%, 19%);
+  --clr-green-light: hsl(153, 31%, 86%);
   --clr-black: #222;
   --transition: all 0.3s linear;
   --spacing: 0.1rem;
@@ -129,6 +129,25 @@ p {
     line-height: 1;
   }
 }
+
+/* alerts */
+.alert {
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 1rem;
+  border-color: transparent;
+  border-radius: var(--radius);
+}
+
+.alert-danger {
+  color: var(--clr-red-dark);
+  background: var(--clr-red-light);
+}
+
+.alert-success {
+  color: var(--clr-green-dark);
+  background: var(--clr-green-light);
+}
+
 /*  global classes */
 
 /* section */

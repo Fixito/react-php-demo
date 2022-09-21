@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Alert from './Alert';
 
 const url = 'http://localhost:8080/demo-fullstack/back/';
 
@@ -8,10 +9,23 @@ const App = () => {
   const [people, setPeople] = useState([]);
   const [editID, setEditID] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [alert, setAlert] = useState({
+    show: false,
+    type: '',
+    msg: ''
+  });
+
+  const showAlert = (show = false, type = '', msg = '') => {
+    setAlert({ show, type, msg });
+  };
 
   const fetchUsers = async () => {
-    const { data } = await axios(`${url}read.php`);
-    setPeople(data);
+    try {
+      const { data } = await axios(`${url}read.php`);
+      setPeople(data);
+    } catch (error) {
+      showAlert(true, 'danger', 'Il y a eu une erreur, essayez plus tard...');
+    }
   };
 
   useEffect(() => {
@@ -22,30 +36,45 @@ const App = () => {
     e.preventDefault();
 
     if (!firstName) {
-      console.log('valeur vide');
+      showAlert(true, 'danger', 'Veuillez entrer un nom');
     } else if (firstName && isEditing) {
-      const person = { user_id: parseInt(editID), name: firstName };
+      try {
+        const person = { user_id: parseInt(editID), name: firstName };
 
-      await axios.post(`${url}edit.php`, person);
-      fetchUsers();
-      setEditID(null);
-      setIsEditing(false);
-      setFirstName('');
+        await axios.post(`${url}edit.php`, person);
+        showAlert(true, 'success', 'Nom modifié');
+        fetchUsers();
+        setEditID(null);
+        setIsEditing(false);
+        setFirstName('');
+      } catch (error) {
+        showAlert(true, 'danger', 'Erreur,essayez encore');
+      }
     } else {
-      const person = { name: firstName };
+      try {
+        const person = { name: firstName };
 
-      await axios.post(`${url}create.php`, person);
-      fetchUsers();
-      setFirstName('');
+        await axios.post(`${url}create.php`, person);
+        showAlert(true, 'success', 'Nom ajouté');
+        fetchUsers();
+        setFirstName('');
+      } catch (error) {
+        showAlert(true, 'danger', 'Erreur,essayez encore');
+      }
     }
   };
 
   const deleteUser = async (id) => {
-    await axios.post(`${url}delete.php`, { user_id: id });
-    fetchUsers();
-    setEditID(null);
-    setIsEditing(false);
-    setFirstName('');
+    try {
+      await axios.post(`${url}delete.php`, { user_id: id });
+      fetchUsers();
+      setEditID(null);
+      setIsEditing(false);
+      setFirstName('');
+      showAlert(true, 'success', 'Nom supprimé');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const editUser = async (id) => {
@@ -59,6 +88,9 @@ const App = () => {
     <>
       <article>
         <form className='form' onSubmit={handleSubmit}>
+          {alert.show && (
+            <Alert {...alert} removeAlert={showAlert} people={people} />
+          )}
           <div className='form-control'>
             <label htmlFor='firstname'>Name :</label>
             <input
