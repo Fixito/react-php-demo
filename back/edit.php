@@ -4,8 +4,8 @@ require_once("./pdo.php");
 try {
   $data =
     json_decode(file_get_contents("php://input"), true);
-  $user_name = trim(htmlentities($data["name"]));
-  $user_id = htmlentities($data["user_id"]);
+  $user_name = trim(htmlspecialchars($data["name"]));
+  $user_id = htmlspecialchars($data["user_id"]);
 
   if ($user_name) {
     $sql = "UPDATE users SET name = :name WHERE  user_id = :id";
