@@ -90,7 +90,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <section className='section'>
       <article>
         <form className='form' onSubmit={handleSubmit}>
           {alert.show && (
@@ -125,7 +125,7 @@ const App = () => {
           <Loading />
         )}
       </article>
-    </>
+    </section>
   );
 };
 

@@ -363,3 +363,7 @@ p {
   text-transform: capitalize;
   cursor: pointer;
 }
+
+.section {
+  padding: 5rem 0;
+}
